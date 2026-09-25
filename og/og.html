@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap">
+<style>
+*{box-sizing:border-box;margin:0}
+html,body{width:1200px;height:630px;overflow:hidden}
+body{background:#120f18;color:#f3eef7;font-family:"Zen Kaku Gothic New",sans-serif;position:relative}
+body::before{content:"";position:absolute;inset:0;background:
+  radial-gradient(600px 400px at 88% 50%,rgba(255,77,154,.22),transparent 70%),
+  radial-gradient(500px 300px at 5% 100%,rgba(242,193,78,.10),transparent 70%)}
+.wrap{position:absolute;inset:0;display:grid;grid-template-columns:1fr 470px;gap:40px;padding:64px 72px;align-items:center}
+.eyebrow{font:400 22px/1 "DotGothic16",monospace;letter-spacing:.16em;color:#ff4d9a}
+h1{margin-top:26px;font:400 84px/1.08 "DotGothic16",monospace;letter-spacing:.01em}
+h1 span{display:block;color:#ff4d9a;font-size:112px}
+.lead{margin-top:26px;font-size:26px;font-weight:700;color:#cfc6da}
+.lead b{color:#fff;font-family:"DotGothic16",monospace;font-weight:400;font-size:30px}
+.tag{margin-top:26px;display:inline-block;font:400 24px/1 "DotGothic16",monospace;color:#120f18;background:#ff4d9a;padding:10px 16px;border-radius:6px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px 14px;position:relative}
+.c{aspect-ratio:16/9;border-radius:10px;background:#231d2e;border:2px solid #3a3148;display:grid;place-items:center}
+.c::after{content:"";width:0;height:0;border-left:20px solid #5a4d6c;border-top:12px solid transparent;border-bottom:12px solid transparent;margin-left:6px}
+.c.top{position:relative;background:linear-gradient(135deg,#f7d774,#fff6c8 35%,#d9a520 60%,#fbe7a1 80%,#b8860b);border:0;transform:scale(1.12);box-shadow:0 0 30px rgba(255,205,70,.6)}
+.c.top::after{border-left-color:#7a5600}
+.crown{position:absolute;left:50%;top:-40px;transform:translateX(-50%);font-size:40px;color:#f2c14e;text-shadow:0 0 14px rgba(255,210,80,.8)}
+</style></head>
+<body><div class="wrap">
+  <div>
+    <p class="eyebrow">#DSPM FAVORITE MUSIC VIDEO</p>
+    <h1>DSPM好きなMV<span>ベスト9</span></h1>
+    <p class="lead">DSPMアイドルのMV <b>290</b> 本から、<br>あなたの好きなMVベスト9を決めよう</p>
+    <p class="tag">#DSPM好きMV9選</p>
+  </div>
+  <div class="grid">
+    <div class="c"></div><div class="c"></div><div class="c"></div>
+    <div class="c"></div><div class="c top"><span class="crown">♛</span></div><div class="c"></div>
+    <div class="c"></div><div class="c"></div><div class="c"></div>
+  </div>
+</div></body></html>
