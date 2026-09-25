@@ -423,24 +423,46 @@ function renderResult(best){
     const m = MV_BY_ID.get(id);
     return `
       <li${r === 0 ? ' class="top"' : ""}>${r === 0 ? '<span class="crown" aria-hidden="true">♛</span>' : ""}
-        <a href="${watch(id)}" target="_blank" rel="noopener">
-          <div class="thumb"><img src="${thumb(id)}" alt=""></div>
-          <div class="t">${esc(m.song)}</div>
-          <div class="g">${esc(m.g)}</div>
-        </a>
+        <div class="thumb"><img src="${thumb(id)}" alt=""></div>
+        <div class="t">${esc(m.song)}</div>
+        <div class="g">${esc(m.g)}</div>
       </li>`;
   }).join("");
   show("#s-result");
 }
 
+function openWeb(url){
+  const a = document.createElement("a");
+  a.href = url; a.target = "_blank"; a.rel = "noopener";
+  a.click();
+}
+
+// スマホはXアプリを直接開く。アプリが無ければWeb版へ
+function shareToX(text){
+  const web = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
+  const ua = navigator.userAgent;
+  if(/Android/i.test(ua)){
+    location.href = `intent://post?message=${encodeURIComponent(text)}#Intent;scheme=twitter;package=com.twitter.android;S.browser_fallback_url=${encodeURIComponent(web)};end`;
+    return;
+  }
+  if(/iPhone|iPad|iPod/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)){
+    let left = false;
+    const onHide = () => { left = true; };
+    document.addEventListener("visibilitychange", onHide, { once: true });
+    location.href = `twitter://post?message=${encodeURIComponent(text)}`;
+    setTimeout(() => {
+      document.removeEventListener("visibilitychange", onHide);
+      if(!left && document.visibilityState === "visible") location.href = web;
+    }, 1500);
+    return;
+  }
+  openWeb(web);
+}
+
 $("#shareBtn").onclick = () => {
   const top = MV_BY_ID.get(bestIds[0]);
   const site = SITE_URL || (location.origin + location.pathname);
-  const text = `${HASHTAG}\n\n🎬私の最推しMV\n${top.song} - ${top.g}\n${watch(top.id)}\n\n👇DSPM 好きなMVベスト9\n${site}`;
-  const a = document.createElement("a");
-  a.href = `https://x.com/intent/post?text=${encodeURIComponent(text)}`;
-  a.target = "_blank"; a.rel = "noopener";
-  a.click();
+  shareToX(`${HASHTAG}\n\n🎬私の最推しMV\n${top.song} - ${top.g}\n${watch(top.id)}\n\n👇DSPM 好きなMVベスト9\n${site}`);
 };
 
 /* =========================
