@@ -183,3 +183,11 @@ h2{margin:0;font:400 30px/1.2 "DotGothic16",monospace;text-wrap:balance}
 .best9 li.silver .t{color:var(--silver);margin-top:5px}
 .best9 li.bronze .t{color:var(--bronze);margin-top:5px}
 @media (prefers-reduced-motion:reduce){.best9 li.silver .thumb,.best9 li.bronze .thumb,.best9 li.silver .thumb::after,.best9 li.bronze .thumb::after{animation:none}}
+
+/* 保存用画像シート */
+.imgsheet{position:fixed;inset:0;z-index:50;background:rgba(10,8,14,.88);display:flex;align-items:center;justify-content:center;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px))}
+.imgsheet[hidden]{display:none}
+.imgsheet-inner{display:flex;flex-direction:column;align-items:center;gap:12px;max-height:100%;width:100%;max-width:520px}
+.imgsheet-msg{margin:0;color:#fff;font-weight:700;font-size:15px}
+.imgsheet img{display:block;max-width:100%;max-height:calc(100vh - 170px);height:auto;border-radius:10px;-webkit-touch-callout:default;user-select:auto}
+#saveImgBtn:disabled{opacity:.5}

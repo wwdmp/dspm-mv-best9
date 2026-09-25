@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://i.ytimg.com; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://i.ytimg.com blob:; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>DSPM好きなMVベスト9</title>
 <meta name="description" content="DSPMアイドルのMV290本から、あなたの好きなMVベスト9を決めるファンメイドサイト。#DSPM好きMV9選">
@@ -18,7 +18,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap">
-<link rel="stylesheet" href="style.css?v=22">
+<link rel="stylesheet" href="style.css?v=23">
 </head>
 <body>
 <div id="app">
@@ -119,14 +119,24 @@
     <div class="result-actions">
       <button class="primary x" id="shareBtn">Xでシェア</button>
       <p class="note" id="shareFallback" hidden><a id="shareWeb" href="#" target="_blank" rel="noopener">Xアプリが開かないときはこちら</a></p>
+      <button class="ghost" id="saveImgBtn">結果を画像で保存</button>
       <button class="ghost" id="restartBtn">もう一度やる</button>
     </div>
-    <p class="note">シェアされるのは1位のMV。9本全部見せたいならスクショも添えて。</p>
+    <p class="note">シェアされるのは1位のMV。9本全部見せたいなら、画像を保存して添えてね。</p>
   </section>
 
 </div>
+
+<!-- 保存用画像（スマホ：長押しで保存） -->
+<div class="imgsheet" id="imgSheet" hidden>
+  <div class="imgsheet-inner">
+    <p class="imgsheet-msg" id="imgSheetMsg">画像を長押しして保存してね</p>
+    <img id="imgSheetImg" alt="DSPM好きなMVベスト9 の結果">
+    <button class="primary" id="imgSheetClose">閉じる</button>
+  </div>
+</div>
 <footer class="foot">DSPM好きなMVベスト9 / fan-made。動画・サムネイルの権利は各権利者に帰属します。</footer>
-<script src="data.js?v=22"></script>
-<script src="app.js?v=22"></script>
+<script src="data.js?v=23"></script>
+<script src="app.js?v=23"></script>
 </body>
 </html>

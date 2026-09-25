@@ -470,6 +470,181 @@ $("#shareBtn").onclick = () => {
 };
 
 /* =========================
+   結果を画像で保存
+========================= */
+
+const IMG_W = 1080, IMG_H = 1350;
+
+function loadImg(src){
+  return new Promise(res => {
+    const im = new Image();
+    im.crossOrigin = "anonymous";
+    im.onload = () => res(im);
+    im.onerror = () => res(null);
+    im.src = src;
+  });
+}
+
+function rrect(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+// 日本語は1文字単位で折り返し。最大maxLines行、はみ出たら…
+function wrapText(ctx, text, maxW, maxLines){
+  const lines = [];
+  let cur = "";
+  for(const ch of [...text]){
+    if(ctx.measureText(cur + ch).width > maxW){
+      lines.push(cur); cur = ch;
+      if(lines.length === maxLines) break;
+    }else cur += ch;
+  }
+  if(lines.length < maxLines && cur) lines.push(cur);
+  const used = lines.join("").length;
+  if(used < [...text].length){
+    let last = lines[lines.length - 1];
+    while(last && ctx.measureText(last + "…").width > maxW) last = last.slice(0, -1);
+    lines[lines.length - 1] = last + "…";
+  }
+  return lines;
+}
+
+const MEDAL = {
+  0: { stops: ["#f7d774", "#fff6c8", "#d9a520", "#fbe7a1", "#b8860b"], glow: "rgba(255,205,70,.75)", text: "#f2c14e" },
+  1: { stops: ["#e9eef3", "#ffffff", "#9aa5b1", "#dfe5ea", "#7d8793"], glow: "rgba(210,220,232,.55)", text: "#d5dbe2" },
+  2: { stops: ["#e0a070", "#fbd7b4", "#a8612e", "#e6ae80", "#7f4520"], glow: "rgba(224,149,91,.55)", text: "#e7a472" }
+};
+
+async function renderResultImage(best){
+  await Promise.all([
+    document.fonts.load('400 40px "DotGothic16"'),
+    document.fonts.load('700 28px "Zen Kaku Gothic New"'),
+    document.fonts.load('500 22px "Zen Kaku Gothic New"')
+  ]).catch(() => {});
+  const imgs = await Promise.all(best.map(id => loadImg(thumb(id))));
+
+  const cv = document.createElement("canvas");
+  cv.width = IMG_W; cv.height = IMG_H;
+  const ctx = cv.getContext("2d");
+
+  // 背景
+  ctx.fillStyle = "#120f18";
+  ctx.fillRect(0, 0, IMG_W, IMG_H);
+  let g = ctx.createRadialGradient(IMG_W * .5, 640, 60, IMG_W * .5, 640, 620);
+  g.addColorStop(0, "rgba(255,77,154,.20)"); g.addColorStop(1, "rgba(255,77,154,0)");
+  ctx.fillStyle = g; ctx.fillRect(0, 0, IMG_W, IMG_H);
+
+  // 見出し
+  const PAD = 60;
+  ctx.textBaseline = "alphabetic";
+  ctx.fillStyle = "#ff4d9a";
+  ctx.font = '400 28px "DotGothic16", monospace';
+  ctx.fillText("MY DSPM BEST 9 MV", PAD, 104);
+  ctx.fillStyle = "#f3eef7";
+  ctx.font = '400 64px "DotGothic16", monospace';
+  ctx.fillText("DSPM好きなMVベスト9", PAD, 186);
+
+  // 3×3（表彰台配置：上段 4・5・6／中段 2・1・3／下段 7・8・9）
+  const SLOTS = [3, 4, 5, 1, 0, 2, 6, 7, 8];
+  const GAP_X = 30, COL_W = (IMG_W - PAD * 2 - GAP_X * 2) / 3, TH = Math.round(COL_W * 9 / 16);
+  const ROW_H = 320, TOP = 262;
+  SLOTS.forEach((r, i) => {
+    if(r >= best.length) return;
+    const m = MV_BY_ID.get(best[r]);
+    const x = PAD + (i % 3) * (COL_W + GAP_X);
+    const y = TOP + Math.floor(i / 3) * ROW_H;
+    const medal = MEDAL[r];
+
+    if(medal){
+      const b = r === 0 ? 7 : 5;
+      const lg = ctx.createLinearGradient(x - b, y - b, x + COL_W + b, y + TH + b);
+      medal.stops.forEach((c, k) => lg.addColorStop(k / (medal.stops.length - 1), c));
+      ctx.save();
+      ctx.shadowColor = medal.glow; ctx.shadowBlur = r === 0 ? 34 : 20;
+      ctx.fillStyle = lg;
+      rrect(ctx, x - b, y - b, COL_W + b * 2, TH + b * 2, 14);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    ctx.save();
+    rrect(ctx, x, y, COL_W, TH, 10);
+    ctx.clip();
+    if(imgs[r]) ctx.drawImage(imgs[r], x, y, COL_W, TH);
+    else { ctx.fillStyle = "#2a2335"; ctx.fillRect(x, y, COL_W, TH); }
+    ctx.restore();
+
+    if(r === 0){
+      ctx.save();
+      ctx.font = '400 46px serif';
+      ctx.textAlign = "center";
+      ctx.fillStyle = "#f2c14e";
+      ctx.shadowColor = "rgba(255,210,80,.9)"; ctx.shadowBlur = 16;
+      ctx.fillText("♛", x + COL_W / 2, y - 14);
+      ctx.restore();
+    }
+
+    ctx.fillStyle = medal ? medal.text : "#f3eef7";
+    ctx.font = '700 27px "Zen Kaku Gothic New", sans-serif';
+    const lines = wrapText(ctx, m.song, COL_W, 2);
+    lines.forEach((ln, k) => ctx.fillText(ln, x, y + TH + 42 + k * 34));
+    ctx.fillStyle = "#a79db3";
+    ctx.font = '500 21px "Zen Kaku Gothic New", sans-serif';
+    ctx.fillText(wrapText(ctx, m.g, COL_W, 1)[0] || "", x, y + TH + 42 + lines.length * 34 + 4);
+  });
+
+  // フッター
+  ctx.fillStyle = "#ff4d9a";
+  ctx.font = '400 30px "DotGothic16", monospace';
+  ctx.fillText(HASHTAG, PAD, IMG_H - 64);
+  ctx.fillStyle = "#a79db3";
+  ctx.font = '500 22px "Zen Kaku Gothic New", sans-serif';
+  ctx.textAlign = "right";
+  ctx.fillText((SITE_URL || location.origin + location.pathname).replace(/^https?:\/\//, "").replace(/\/$/, ""), IMG_W - PAD, IMG_H - 66);
+  ctx.textAlign = "left";
+
+  return new Promise(res => cv.toBlob(res, "image/png"));
+}
+
+let sheetUrl = null;
+
+$("#saveImgBtn").onclick = async () => {
+  const btn = $("#saveImgBtn");
+  btn.disabled = true;
+  const label = btn.textContent;
+  btn.textContent = "画像を作成中…";
+  try{
+    const blob = await renderResultImage(bestIds);
+    if(!blob) throw new Error("no blob");
+    if(sheetUrl) URL.revokeObjectURL(sheetUrl);
+    sheetUrl = URL.createObjectURL(blob);
+    const touch = matchMedia("(pointer: coarse)").matches;
+    if(touch){
+      $("#imgSheetImg").src = sheetUrl;
+      $("#imgSheet").hidden = false;
+    }else{
+      const a = document.createElement("a");
+      a.href = sheetUrl; a.download = "dspm-mv-best9.png";
+      a.click();
+    }
+  }catch(e){
+    alert("画像を作れなかった。時間をおいてもう一度試してね。");
+  }finally{
+    btn.disabled = false;
+    btn.textContent = label;
+  }
+};
+
+$("#imgSheetClose").onclick = () => { $("#imgSheet").hidden = true; };
+$("#imgSheet").addEventListener("click", e => { if(e.target.id === "imgSheet") $("#imgSheet").hidden = true; });
+
+/* =========================
    戻る
 ========================= */
 
