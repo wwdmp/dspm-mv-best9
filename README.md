@@ -15,7 +15,7 @@ https://wwdmp.github.io/dspm-mv-best9/
 - `index.html` / `style.css` / `app.js` — サイト本体（ビルド不要の静的サイト）
 - `data.js` — 対象MVのデータ
 - `mv_list.tsv` — 選別済みMVリスト（原本）
-- `og.png` / `og/og.html` — OGP画像とその元HTML
+- `og-image.png` / `og/og.html` — OGP画像とその元HTML
 
 ## 注意
 非公式のファンメイドサイトです。動画・サムネイルの権利は各権利者に帰属します。
