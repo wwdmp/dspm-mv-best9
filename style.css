@@ -161,3 +161,25 @@ h2{margin:0;font:400 30px/1.2 "DotGothic16",monospace;text-wrap:balance}
 #shareFallback a{color:var(--sub)}
 .dock-hint.warn{color:var(--accent);font-weight:700;animation:nudge .3s}
 @keyframes nudge{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+
+/* 2位（銀）・3位（銅）：1位より控えめに、王冠と拡大はなし */
+.best9 li.silver .thumb,.best9 li.bronze .thumb{border-radius:7px;padding:3px;animation:spin 8s linear infinite}
+.best9 li.silver .thumb{
+  background:conic-gradient(from var(--ang,0deg),#e9eef3,#ffffff,#9aa5b1,#dfe5ea,#7d8793,#e9eef3);
+  box-shadow:0 0 0 1px rgba(125,135,147,.4),0 0 10px rgba(200,212,224,.55);
+}
+.best9 li.bronze .thumb{
+  background:conic-gradient(from var(--ang,0deg),#e0a070,#fbd7b4,#a8612e,#e6ae80,#7f4520,#e0a070);
+  box-shadow:0 0 0 1px rgba(168,97,46,.4),0 0 10px rgba(224,149,91,.5);
+}
+.best9 li.silver .thumb img,.best9 li.bronze .thumb img{border-radius:4px}
+.best9 li.silver .thumb::after,.best9 li.bronze .thumb::after{
+  content:"";position:absolute;inset:3px;border-radius:4px;pointer-events:none;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.4) 45%,transparent 60%);
+  background-size:250% 100%;animation:shine 4.5s ease-in-out infinite;
+}
+.best9 li.silver .thumb::after{animation-delay:.8s}
+.best9 li.bronze .thumb::after{animation-delay:1.6s}
+.best9 li.silver .t{color:var(--silver);margin-top:5px}
+.best9 li.bronze .t{color:var(--bronze);margin-top:5px}
+@media (prefers-reduced-motion:reduce){.best9 li.silver .thumb,.best9 li.bronze .thumb,.best9 li.silver .thumb::after,.best9 li.bronze .thumb::after{animation:none}}

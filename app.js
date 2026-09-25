@@ -429,7 +429,7 @@ function renderResult(best){
   $("#best9").innerHTML = SLOTS.filter(r => r < best.length).map(r => [r, best[r]]).map(([r, id]) => {
     const m = MV_BY_ID.get(id);
     return `
-      <li${r === 0 ? ' class="top"' : ""}>${r === 0 ? '<span class="crown" aria-hidden="true">♛</span>' : ""}
+      <li${r === 0 ? ' class="top"' : r === 1 ? ' class="silver"' : r === 2 ? ' class="bronze"' : ""}>${r === 0 ? '<span class="crown" aria-hidden="true">♛</span>' : ""}
         <div class="thumb"><img src="${thumb(id)}" alt=""></div>
         <div class="t">${esc(m.song)}</div>
         <div class="g">${esc(m.g)}</div>
