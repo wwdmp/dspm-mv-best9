@@ -446,14 +446,11 @@ function shareToX(text){
     return;
   }
   if(/iPhone|iPad|iPod/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)){
-    let left = false;
-    const onHide = () => { left = true; };
-    document.addEventListener("visibilitychange", onHide, { once: true });
+    // 自動でWeb版へは切り替えない（確認ダイアログ中にSafariでも開いてしまうため）。
+    // アプリが開かなかった人向けに、手動のリンクだけ出す
+    $("#shareWeb").href = web;
     location.href = `twitter://post?message=${encodeURIComponent(text)}`;
-    setTimeout(() => {
-      document.removeEventListener("visibilitychange", onHide);
-      if(!left && document.visibilityState === "visible") location.href = web;
-    }, 1500);
+    setTimeout(() => { $("#shareFallback").hidden = false; }, 1500);
     return;
   }
   openWeb(web);

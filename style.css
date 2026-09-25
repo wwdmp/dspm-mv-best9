@@ -158,3 +158,4 @@ h2{margin:0;font:400 30px/1.2 "DotGothic16",monospace;text-wrap:balance}
 @keyframes shine{0%{background-position:150% 0}60%,100%{background-position:-60% 0}}
 @media (prefers-reduced-motion:reduce){.best9 li.top .thumb,.best9 li.top .thumb::after{animation:none}}
 .hero .ghost{min-height:48px;font-size:16px;font-weight:700}
+#shareFallback a{color:var(--sub)}
