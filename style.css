@@ -159,3 +159,5 @@ h2{margin:0;font:400 30px/1.2 "DotGothic16",monospace;text-wrap:balance}
 @media (prefers-reduced-motion:reduce){.best9 li.top .thumb,.best9 li.top .thumb::after{animation:none}}
 .hero .ghost{min-height:48px;font-size:16px;font-weight:700}
 #shareFallback a{color:var(--sub)}
+.dock-hint.warn{color:var(--accent);font-weight:700;animation:nudge .3s}
+@keyframes nudge{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}

@@ -5,6 +5,7 @@ const watch = (id) => `https://www.youtube.com/watch?v=${id}`;
 const MV_BY_ID = new Map(MVS.map(m => [m.id, m]));
 const FINAL_SIZE = 9;
 const BEST = 9;
+const HEART_MAX = 30;
 const BLOCK_MAX = 6;
 const SAVE_KEY = "dspm-mv-best9-save-v2";   // 準決勝の形式を変えたら上げる（古い途中データと互換がないため）
 const HASHTAG = "#DSPM好きMV9選";
@@ -187,8 +188,8 @@ function semiPlan(n){
 function updateQualDock(){
   const n = state.hearts.size;
   $("#heartCount").textContent = n;
-  $("#heartHint").textContent = n < BEST ? `あと${BEST - n}本` : n > FINAL_SIZE ? `準決勝 ${semiPlan(n)}回` : "決勝へ直行";
-  $("#qualNext").disabled = n < BEST;
+  $("#heartHint").textContent = n < BEST ? `あと${BEST - n}本` : n > HEART_MAX ? `${n - HEART_MAX}本はずして` : n === HEART_MAX ? "上限30本" : n > FINAL_SIZE ? `準決勝 ${semiPlan(n)}回` : "決勝へ直行";
+  $("#qualNext").disabled = n < BEST || n > HEART_MAX;
   document.querySelectorAll(".qsec").forEach(sec => {
     const c = [...sec.querySelectorAll(".mv")].filter(el => state.hearts.has(el.dataset.id)).length;
     sec.querySelector(".hc").textContent = c ? `♡${c}` : "";
@@ -197,6 +198,12 @@ function updateQualDock(){
 
 function toggleHeart(el){
   const id = el.dataset.id;
+  if(!state.hearts.has(id) && state.hearts.size >= HEART_MAX){
+    const hint = $("#heartHint");
+    hint.textContent = "30本までだよ";
+    hint.classList.remove("warn"); void hint.offsetWidth; hint.classList.add("warn");
+    return;
+  }
   state.hearts.has(id) ? state.hearts.delete(id) : state.hearts.add(id);
   const on = state.hearts.has(id);
   el.setAttribute("aria-pressed", on);
@@ -459,7 +466,7 @@ function shareToX(text){
 $("#shareBtn").onclick = () => {
   const top = MV_BY_ID.get(bestIds[0]);
   const site = SITE_URL || (location.origin + location.pathname);
-  shareToX(`${HASHTAG}\n\n🎬私の最推しMV\n${top.song} - ${top.g}\n${watch(top.id)}\n\n👇DSPM 好きなMVベスト9\n${site}`);
+  shareToX(`${HASHTAG}\n\n🎬私の最推しMV\n${top.song} - ${top.g}\n${watch(top.id)}\n\n▼DSPM好きなMVベスト9\n${site}`);
 };
 
 /* =========================
